@@ -16,7 +16,7 @@ services:
 
   - type: web
     name: help-sibiu-backend
-    plan: starter
+    plan: free
     env: node
     rootDir: apps/backend
     buildCommand: npm ci && npx prisma generate
