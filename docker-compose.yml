@@ -1,0 +1,57 @@
+services:
+  db:
+    image: postgis/postgis:16-3.4
+    container_name: help-sibiu-db
+    environment:
+      POSTGRES_DB: helpsibiu
+      POSTGRES_USER: helpsibiu
+      POSTGRES_PASSWORD: helpsibiu
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  backend:
+    build: ./apps/backend
+    container_name: help-sibiu-backend
+    depends_on:
+      - db
+    environment:
+      NODE_ENV: development
+      PORT: 4000
+      DATABASE_URL: postgresql://helpsibiu:helpsibiu@db:5432/helpsibiu?schema=public
+      CORS_ORIGIN: http://localhost:5173
+      SOCKET_CORS_ORIGIN: http://localhost:5173
+      FIREBASE_PROJECT_ID: ${FIREBASE_PROJECT_ID}
+      FIREBASE_CLIENT_EMAIL: ${FIREBASE_CLIENT_EMAIL}
+      FIREBASE_PRIVATE_KEY: ${FIREBASE_PRIVATE_KEY}
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./apps/backend:/app
+      - /app/node_modules
+    command: sh -lc "npm install && npx prisma generate && npm run dev"
+
+
+  web:
+    build: ./apps/web
+    container_name: help-sibiu-web
+    depends_on:
+      - backend
+    environment:
+      VITE_API_BASE: http://localhost:4000
+      VITE_SOCKET_URL: http://localhost:4000
+      VITE_FIREBASE_API_KEY: ${VITE_FIREBASE_API_KEY}
+      VITE_FIREBASE_AUTH_DOMAIN: ${VITE_FIREBASE_AUTH_DOMAIN}
+      VITE_FIREBASE_PROJECT_ID: ${VITE_FIREBASE_PROJECT_ID}
+      VITE_FIREBASE_APP_ID: ${VITE_FIREBASE_APP_ID}
+      VITE_FIREBASE_MESSAGING_SENDER_ID: ${VITE_FIREBASE_MESSAGING_SENDER_ID}
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./apps/web:/app
+      - /app/node_modules
+    command: sh -lc "npm ci && npm run dev -- --host 0.0.0.0 --port 5173"
+
+volumes:
+  db_data:

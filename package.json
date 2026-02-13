@@ -1,0 +1,14 @@
+{
+  "name": "help-sibiu",
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "npm -w apps/backend run dev",
+    "dev:web": "npm -w apps/web run dev",
+    "dev:mobile": "npm -w apps/mobile run start",
+    "build": "npm -w apps/backend run build && npm -w apps/web run build",
+    "lint": "npm -ws run lint"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "expo": {
+    "name": "Help-Sibiu",
+    "slug": "help-sibiu",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ]
+  }
+}

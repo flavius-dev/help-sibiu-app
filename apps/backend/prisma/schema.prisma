@@ -1,0 +1,70 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  DISPATCHER
+  VOLUNTEER
+}
+
+model User {
+  id          String   @id @default(cuid())
+  firebaseUid String   @unique
+  email       String   @unique
+  name        String?
+  role        Role     @default(VOLUNTEER)
+  createdAt   DateTime @default(now())
+
+  alertsCreated    Alert[] @relation("alertsCreated")
+  alertAssignments AlertAssignment[]
+}
+
+model Alert {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  status      String   @default("ACTIVE") // ACTIVE, RESOLVED, CANCELED
+  lat         Float
+  lng         Float
+  createdAt   DateTime @default(now())
+
+  createdById String
+  createdBy   User     @relation("alertsCreated", fields: [createdById], references: [id])
+
+  assignments AlertAssignment[]
+}
+
+model AlertAssignment {
+  id        String   @id @default(cuid())
+  status    String   @default("ACCEPTED")
+  createdAt DateTime @default(now())
+
+  alertId String
+  alert   Alert  @relation(fields: [alertId], references: [id])
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  @@unique([alertId, userId])
+}
+
+model Zone {
+  id        String   @id @default(cuid())
+  name      String
+  geojson   Json
+  risk      Float    @default(0)
+  createdAt DateTime @default(now())
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  action    String
+  meta      Json?
+  createdAt DateTime @default(now())
+}
