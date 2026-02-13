@@ -1,7 +1,7 @@
 services:
   - type: pserv
     name: help-sibiu-db
-    plan: free
+    plan: starter
     env: docker
     runtime: image
     image:
