@@ -1,7 +1,7 @@
 services:
   - type: pserv
     name: help-sibiu-db
-    plan: starter
+    plan: free
     env: docker
     runtime: image
     image:
@@ -16,7 +16,7 @@ services:
 
   - type: web
     name: help-sibiu-backend
-    plan: free
+    plan: starter
     env: node
     rootDir: apps/backend
     buildCommand: npm ci && npx prisma generate
