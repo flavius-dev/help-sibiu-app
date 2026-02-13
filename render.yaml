@@ -1,32 +1,90 @@
-services:
-  - type: pserv
-    name: help-sibiu-db
-    plan: free
-    env: docker
-    runtime: image
-    image:
-      url: postgis/postgis:16-3.4
-    envVars:
-      - key: POSTGRES_DB
-        value: helpsibiu
-      - key: POSTGRES_USER
-        value: helpsibiu
-      - key: POSTGRES_PASSWORD
-        generateValue: true
+# services:
+#   - type: pserv
+#     name: help-sibiu-db
+#     plan: free
+#     env: docker
+#     runtime: image
+#     image:
+#       url: postgis/postgis:16-3.4
+#     envVars:
+#       - key: POSTGRES_DB
+#         value: helpsibiu
+#       - key: POSTGRES_USER
+#         value: helpsibiu
+#       - key: POSTGRES_PASSWORD
+#         generateValue: true
 
+#   - type: web
+#     name: help-sibiu-backend
+#     env: node
+#     rootDir: apps/backend
+#     buildCommand: npm ci && npx prisma generate
+#     startCommand: node src/server.js
+#     envVars:
+#       - key: NODE_VERSION
+#         value: 20
+#       - key: NODE_ENV
+#         value: production
+#       - key: PORT
+#         value: 4000
+#       - key: DATABASE_URL
+#         fromDatabase:
+#           name: help-sibiu-db
+#           property: connectionString
+#       - key: CORS_ORIGIN
+#         value: https://help-sibiu-web.onrender.com
+#       - key: SOCKET_CORS_ORIGIN
+#         value: https://help-sibiu-web.onrender.com
+#       - key: FIREBASE_PROJECT_ID
+#         sync: false
+#       - key: FIREBASE_CLIENT_EMAIL
+#         sync: false
+#       - key: FIREBASE_PRIVATE_KEY
+#         sync: false
+
+#   - type: web
+#     name: help-sibiu-web
+#     env: static
+#     rootDir: apps/web
+#     buildCommand: npm ci && npm run build
+#     staticPublishPath: dist
+#     envVars:
+#       - key: VITE_API_BASE
+#         value: https://help-sibiu-backend.onrender.com
+#       - key: VITE_SOCKET_URL
+#         value: https://help-sibiu-backend.onrender.com
+#       - key: VITE_FIREBASE_API_KEY
+#         sync: false
+#       - key: VITE_FIREBASE_AUTH_DOMAIN
+#         sync: false
+#       - key: VITE_FIREBASE_PROJECT_ID
+#         sync: false
+#       - key: VITE_FIREBASE_APP_ID
+#         sync: false
+#       - key: VITE_FIREBASE_MESSAGING_SENDER_ID
+#         sync: false
+
+
+
+
+
+databases:
+  - name: help-sibiu-db
+    plan: free
+    postgresMajorVersion: 16
+
+services:
   - type: web
     name: help-sibiu-backend
-    env: node
+    runtime: node
     rootDir: apps/backend
-    buildCommand: npm ci && npx prisma generate
+    buildCommand: npm install && npx prisma generate
     startCommand: node src/server.js
     envVars:
       - key: NODE_VERSION
         value: 20
       - key: NODE_ENV
         value: production
-      - key: PORT
-        value: 4000
       - key: DATABASE_URL
         fromDatabase:
           name: help-sibiu-db
@@ -44,9 +102,9 @@ services:
 
   - type: web
     name: help-sibiu-web
-    env: static
+    runtime: static
     rootDir: apps/web
-    buildCommand: npm ci && npm run build
+    buildCommand: npm install && npm run build
     staticPublishPath: dist
     envVars:
       - key: VITE_API_BASE
@@ -63,3 +121,4 @@ services:
         sync: false
       - key: VITE_FIREBASE_MESSAGING_SENDER_ID
         sync: false
+
