@@ -16,7 +16,6 @@ services:
 
   - type: web
     name: help-sibiu-backend
-    plan: starter
     env: node
     rootDir: apps/backend
     buildCommand: npm ci && npx prisma generate
@@ -45,7 +44,6 @@ services:
 
   - type: web
     name: help-sibiu-web
-    plan: starter
     env: static
     rootDir: apps/web
     buildCommand: npm ci && npm run build
